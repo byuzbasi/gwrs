@@ -1,0 +1,67 @@
+{
+  "application_id": "nonconvex-gwr-usa-counties-acs2024-metadata-v1",
+  "application_title": "Official ACS 2024 Data Profile metadata",
+  "snapshot_date": "2026-09-07",
+  "minimum_free_gib_after_download": 2,
+  "unknown_size_reserve_gib": 0.01,
+  "timeout_seconds": 120,
+  "retries": 3,
+  "sources": [
+    {
+      "id": "acs5_profile_2024_dp02_metadata",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile/groups.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile/groups/DP02.json",
+      "filename": "acs5-profile-2024-DP02-metadata.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 100000,
+      "license": "U.S. government public data",
+      "notes": "Official variable definitions for the social profile."
+    },
+    {
+      "id": "acs5_profile_2024_dp03_metadata",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile/groups.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile/groups/DP03.json",
+      "filename": "acs5-profile-2024-DP03-metadata.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 100000,
+      "license": "U.S. government public data",
+      "notes": "Official variable definitions for the economic profile."
+    },
+    {
+      "id": "acs5_profile_2024_dp04_metadata",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile/groups.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile/groups/DP04.json",
+      "filename": "acs5-profile-2024-DP04-metadata.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 100000,
+      "license": "U.S. government public data",
+      "notes": "Official variable definitions for the housing profile."
+    },
+    {
+      "id": "acs5_profile_2024_dp05_metadata",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile/groups.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile/groups/DP05.json",
+      "filename": "acs5-profile-2024-DP05-metadata.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 100000,
+      "license": "U.S. government public data",
+      "notes": "Official variable definitions for the demographic profile."
+    }
+  ]
+}

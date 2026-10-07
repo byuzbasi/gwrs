@@ -1,0 +1,5 @@
+"variable","label","unit","year","indicator_id","source_title","metadata_url"
+"population","Resident population","persons","2025","ADNKS-GK137473-O29001","İBBS-Düzey1, İBBS-Düzey2,  İl ve İlçe Nüfusları","https://data.tuik.gov.tr/Kategori/GetKategori?p=nufus-ve-demografi-109&dil=1"
+"net_migration_rate","Net internal migration rate","per thousand","2025","ADNKS-GK140832-O29009","Bölgelerin net göç hızı bilgileri","https://data.tuik.gov.tr/Kategori/GetKategori?p=nufus-ve-demografi-109&dil=1"
+"schooling_years","Mean years of schooling, age 25+","years","2025","ULE-GK378667484-O29503","Ortalama Eğitim Süresi (yıl)","https://data.tuik.gov.tr/Kategori/GetKategori?p=egitim-kultur-spor-ve-turizm-105&dil=1"
+"fertility_rate","Total fertility rate","children per woman","2025","DGM-GK378140487-O40205","Toplam doğurganlık hızı (çocuk sayısı)","https://data.tuik.gov.tr/Kategori/GetKategori?p=nufus-ve-demografi-109&dil=1"

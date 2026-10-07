@@ -1,0 +1,40 @@
+{
+  "schema": "gwrs-usa-counties-acs2024-spatial-design-v1",
+  "input_audit": "audit-v2",
+  "expected_domain_counties": 3109,
+  "expected_eligible_counties": 3107,
+  "projection": {
+    "epsg": 5070,
+    "name": "NAD83 / Conus Albers",
+    "coordinate_unit": "metre"
+  },
+  "representative_points": {
+    "method": "sf::st_point_on_surface",
+    "apply_after_projection": true
+  },
+  "spatial_folds": {
+    "method": "gwrs::spatial_folds",
+    "algorithm": "k-means on standardized projected representative-point coordinates",
+    "n_folds": 5,
+    "seed": 20260907,
+    "nstart": 100,
+    "minimum_fold_size": 250,
+    "maximum_size_ratio": 3.0
+  },
+  "common_diagnostic_graph": {
+    "base_rule": "queen_contiguity",
+    "snap_metres": 1,
+    "isolate_rule": "symmetric edge to nearest non-isolated eligible county by projected representative-point distance",
+    "binary_edges": true,
+    "row_standardize_for_moran_lisa": true,
+    "expected_initial_isolates": 2,
+    "expected_isolate_fips": ["25019", "53055"],
+    "expected_final_components": 1
+  },
+  "diagnostic_scope": {
+    "moran_lisa_residuals": "out_of_fold residuals on the common graph for every compared method",
+    "f1_f2_f3": "unpenalized fixed Gaussian GWR only"
+  },
+  "output_root": "spatial-v1",
+  "model_fitting_locked": true
+}

@@ -1,0 +1,178 @@
+[
+  {
+    "file": "NAMESPACE",
+    "sha256": "a489aada9ab6bd9e1362861d5e8c23387d9813dbb3c608f0791f896c605310da"
+  },
+  {
+    "file": "R/RcppExports.R",
+    "sha256": "96f431eb0f16a0acd9a1feeda9f0be498a59617abaa76751e5109aab50c3938c"
+  },
+  {
+    "file": "R/autoplot.R",
+    "sha256": "97ac75622f506619439b7fe035313563039e9eb5573ea34587278c2cc13c6d9f"
+  },
+  {
+    "file": "R/control.R",
+    "sha256": "91606c83e7462853ec909dc79eecca72d3add24245fd5a197b5ccff100155c48"
+  },
+  {
+    "file": "R/cv.R",
+    "sha256": "d5da2b686d7d35ba4ec4cb1555b58a04762827b0c5357497a5fd8cba2d269930"
+  },
+  {
+    "file": "R/diagnostic_tests.R",
+    "sha256": "ce73570aade6410e3315ea8ecb1be3e51d4ce32dae356332cfa744bdb4b67311"
+  },
+  {
+    "file": "R/diagnostics.R",
+    "sha256": "85126a6380f6ded382279c4b43ca3098f68249f643d734fab6c140fbca5aff15"
+  },
+  {
+    "file": "R/gwr_sl.R",
+    "sha256": "fc86ada0a40ff672f30807806884b9a570f871eabd2a4e88d92a3ea804e5ebea"
+  },
+  {
+    "file": "R/gwrs-package.R",
+    "sha256": "ab0011d183462853b1abdb9629cd9adfb74ffccd7149e49bcea6ebcb13043805"
+  },
+  {
+    "file": "R/ktdd.R",
+    "sha256": "ff3015b1ffee95885718795fdc1fed4c55e35909cc3cf6cfbe705d07f5aa9d0d"
+  },
+  {
+    "file": "R/lad_gwr_sl.R",
+    "sha256": "190d437948a8755c839f3fcaa967b9222b45e66fc83a43440ec57e2dde86518c"
+  },
+  {
+    "file": "R/local_collinearity.R",
+    "sha256": "695a84299cc1da0a4ad156bf0b38b9d82384ca54e9e0be592e9d7c93c797ca84"
+  },
+  {
+    "file": "R/local_inference.R",
+    "sha256": "ed65ae47aad8b47ed205c0f2d0b171b722148c5322569bd4ff79e99f07c252bb"
+  },
+  {
+    "file": "R/methods.R",
+    "sha256": "be7b060234fc4bd00b82c27b65c5e25e17294a3a052baf159f5b7facc2ce57c9"
+  },
+  {
+    "file": "R/moran.R",
+    "sha256": "1ea29d3bf7049d09e49b3c5c8492174c3390321ca5fb9c219376ae8cacf88018"
+  },
+  {
+    "file": "R/neighbors.R",
+    "sha256": "53f424e0269acc98bc9a6df8034d62d311e975601e33a4f62880e5b79813da6a"
+  },
+  {
+    "file": "R/nonconvex-cv.R",
+    "sha256": "7234e11d3c149f45f9ad475f8d690b55efbffd6143a94e5e8438bd639b824239"
+  },
+  {
+    "file": "R/nonconvex-path.R",
+    "sha256": "c39e3e7e1379304192cafd8160f0b3c4ae58a75009b89ad1694e68ed01a15fc0"
+  },
+  {
+    "file": "R/nonconvex.R",
+    "sha256": "3c74c2a8c06697523203044583c4494dcc1a9ffb23318ceece2adef8bd4c18fe"
+  },
+  {
+    "file": "R/path.R",
+    "sha256": "578ccaa021d0bfea062938ae1b1d5d04a4b4681733b918498e905a59c3bb066c"
+  },
+  {
+    "file": "R/penalized_workflows.R",
+    "sha256": "1277f3ac184d4c73c1254ca874fd68fafe6f65da6cecf5cb8f2a5ef8ad4e3cce"
+  },
+  {
+    "file": "R/plot-bivariate.R",
+    "sha256": "1fed9cfa02c7af7f0ace3ee2ca62312a8ff0789190976d5ff2adc465f49b2d51"
+  },
+  {
+    "file": "R/plot-heatmap.R",
+    "sha256": "e2d3cea18a22760c7e59ff0540ca0a9c58abe60f0714e7c9954566daaf45def6"
+  },
+  {
+    "file": "R/plot.R",
+    "sha256": "56614113acfc5530767416b2ab167c3138d980ae6ed124312e071c5838f9f600"
+  },
+  {
+    "file": "R/reference_models.R",
+    "sha256": "29f75a68c9f99a7b30d0c8ed0999d7732cfc6f7d248a4c8ee42be2f9ea7e0ff6"
+  },
+  {
+    "file": "R/report.R",
+    "sha256": "ef35a62db76df8bc1e77bc88ad40db0de3d98ee7bbb41e6cd42fa02e8b456363"
+  },
+  {
+    "file": "R/spatial-boundary.R",
+    "sha256": "176eb5ba3696048ef55e2f4a5ea87b001871613ea7eb7805a92c2eebb809a659"
+  },
+  {
+    "file": "R/spatial-distance.R",
+    "sha256": "1f524138aa0826e7f2f08cfe23efab0660eda4cfaed958c169e7e18b0482cafd"
+  },
+  {
+    "file": "R/spatial-extract.R",
+    "sha256": "530416a042208ac12faf54d022006fdf97a0021fbdbaf0bf7c69fbd0bc4f9c0a"
+  },
+  {
+    "file": "R/spatial-interpolation.R",
+    "sha256": "59fda1eccbc6b72488c8cfd895216da629d1035c67740aadfac6bee4c3210676"
+  },
+  {
+    "file": "R/utils.R",
+    "sha256": "9c95cc84aafeb5c177f7cdc3a7a7a35a290bcc5f1071cbd70bb1e148554307b2"
+  },
+  {
+    "file": "src/Makevars",
+    "sha256": "aa7e0412c183a9938455d2e3cbe52eb752cdaefdc56533bf5c28805259e4e52b"
+  },
+  {
+    "file": "src/Makevars.win",
+    "sha256": "1f63eb7aa5cd689b27f43a5402949d4c287bba683f2b8c6015ec1419ab6fc9b7"
+  },
+  {
+    "file": "src/RcppExports.cpp",
+    "sha256": "c1fed8a6dcca30b943f392b62909570e1c5a598b86a72dce6063ff4b99cf055e"
+  },
+  {
+    "file": "src/diagnostics_core.cpp",
+    "sha256": "d59c4ea6d2399bf9bf230258edc40130edf45ea9305a05fc676b5896e51b5732"
+  },
+  {
+    "file": "src/f_tests_core.cpp",
+    "sha256": "6e051276bd4bf773050026cc31ef4b7e0f9b121f33cb5c6d62bbc2842da5d41e"
+  },
+  {
+    "file": "src/gwr_nonconvex_core.cpp",
+    "sha256": "1d6a810dd6a3d831705f502bc781075616f4a44ecd82d5176cf9e566295a28b4"
+  },
+  {
+    "file": "src/gwr_path_core.cpp",
+    "sha256": "77c3fcb8cf22b1e5e8c87473e6439464c5d00d9c6449173e109244f89c88778a"
+  },
+  {
+    "file": "src/gwr_sl_core.cpp",
+    "sha256": "cef07b8f511ac883645eae506194687db5b44605a3a68111b31be58e42b23da0"
+  },
+  {
+    "file": "src/gwrs_common.h",
+    "sha256": "6b31d22db60daf39c6f928eb3ae1ca7297be2cb13c120c54a8f25faa64ac984a"
+  },
+  {
+    "file": "src/gwrs_nonconvex.h",
+    "sha256": "0a26a1725d397868ebdd772d6121ef152d2984dc5297f71ec43ebb4fd3b908a0"
+  },
+  {
+    "file": "src/ktdd_core.cpp",
+    "sha256": "a335dad211e595a23725fefb9d0f4dd62a5873de28a7873cd2b1b95fc8bba783"
+  },
+  {
+    "file": "src/lad_gwr_sl_core.cpp",
+    "sha256": "13a8e7047f5352a2897ff35c8ede0ea36d72de950759f6e5938381b83798e823"
+  },
+  {
+    "file": "src/spatial_diagnostics_core.cpp",
+    "sha256": "547a43c0c053a4e086b10ce2ee2a52f3af0ea488bf3049c879612b074189651b"
+  }
+]

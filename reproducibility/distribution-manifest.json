@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "file": "gwrs-scad-mcp-reproduction-v2.zip",
+      "bytes": 13281680,
+      "sha256": "b1b4df794d107e534997396f3df2bf5e4d34080bc8d299706416b9fb2fc5bc25"
+    },
+    {
+      "file": "gwrs_0.4.0.9013.tar.gz",
+      "bytes": 563499,
+      "sha256": "e10fdc6e98b747559ed86ee017e27748e95422eab5e62ab70afd3de1fbc4190e"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+"candidate_family","representative_codes","decision","reason"
+"Household-income distribution","DP03_0052E--DP03_0061E; DP03_0063E","exclude","Directly reconstructs or closely duplicates the response distribution"
+"Income components and means","DP03_0064PE; DP03_0065E; DP03_0067E; DP03_0069E; DP03_0088E","exclude","Contains household earnings, benefit income, retirement income, or per-capita income derived from the target construct"
+"Poverty measures","DP03_0128PE and related poverty rows","exclude","Poverty status is determined using income thresholds and would leak the response construct"
+"Housing cost burden","DP04 SMOCAPI and GRAPI rows","exclude","The published ratio explicitly uses household income in its denominator"
+"Median home value and rent","DP04_0089E; DP04_0134E","defer","Potentially simultaneous housing-market outcomes; excluded from v1 to keep temporal and causal interpretation conservative"
+"Complete occupation composition","DP03_0029PE","exclude_reference_category","Sales and office occupation share is omitted so included occupation shares do not sum exactly to 100 with the intercept"
+"Complete industry composition","Unselected DP03_0034PE--DP03_0045PE rows","exclude_reference_categories","Only three prespecified industry shares are retained; the full set would form an exact composition"
+"Coordinates and Census identifiers","NAME; state; county; geometry coordinates","identifier_or_spatial_index_only","Used for linkage and spatial weighting, never offered to the variable-selection penalty as socioeconomic predictors"
+

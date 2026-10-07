@@ -1,0 +1,102 @@
+{
+  "year": 2025,
+  "retrieved_date": "2026-09-19",
+  "source": "TurkStat Geographical Statistics Portal",
+  "url": "https://cip.tuik.gov.tr/",
+  "files": [
+    {
+      "file": "nuts3.geojson",
+      "bytes": 233221,
+      "sha256": "6b4a652d805ba5c554bb86ab7709cba33006d2a8e689b38797f11dd42bde272c"
+    },
+    {
+      "file": "population.json",
+      "bytes": 6392,
+      "sha256": "709b0cfaee3174177f231d3ffa41466633b264bcf34d88fd59768139749a9e27"
+    },
+    {
+      "file": "net_migration_rate.json",
+      "bytes": 5714,
+      "sha256": "9b6f061f1c4e7410d9ed9c97c40858276da58ae96c8fac985cbad7e53a6107c2"
+    },
+    {
+      "file": "schooling_years.json",
+      "bytes": 4956,
+      "sha256": "4d06340d2aed490c6d350a9f1793b57094ba0ea729756b11c63ac96e89a54a5c"
+    },
+    {
+      "file": "fertility_rate.json",
+      "bytes": 5403,
+      "sha256": "0ceb290584e90117cf2e1bb0ebc0ec5a246652cf84f5d934545ddd65ec809d79"
+    },
+    {
+      "file": "province-statistics-2025.csv",
+      "bytes": 4176,
+      "sha256": "c6b97ec45c726f50b3918c0f6494408d6f8e799e73565ae948d8bbeb230a266c"
+    },
+    {
+      "file": "dictionary.csv",
+      "bytes": 945,
+      "sha256": "8ca039b92f8f416ba70d35514a00d0594074abd5c2006fbc9abcd8f866f21e3e"
+    }
+  ],
+  "raw_source_receipts": [
+    {
+      "file": "nuts3.geojson.source/nuts3.geojson",
+      "bytes": 233221,
+      "sha256": "6b4a652d805ba5c554bb86ab7709cba33006d2a8e689b38797f11dd42bde272c",
+      "url": "https://cip.tuik.gov.tr/assets/geometri/nuts3.json",
+      "retrieved_utc": "2026-09-19T19:39:33Z"
+    },
+    {
+      "file": "indicator-menu.json.source/indicator-menu.json",
+      "bytes": 30113,
+      "sha256": "865719b22a4aa5872abe738056643d6ad5e27d4984bb46942a0ce45f1661cb5e",
+      "url": "https://cip.tuik.gov.tr/assets/sideMenu.json?v=3.000",
+      "retrieved_utc": "2026-09-19T19:39:53Z"
+    },
+    {
+      "file": "portal-config.js.source/portal-config.js",
+      "bytes": 791,
+      "sha256": "aedc6c7334df0ef60591c152a142e7bb03d642461cd933f22708740338736e57",
+      "url": "https://cip.tuik.gov.tr/configData.js",
+      "retrieved_utc": "2026-09-19T19:39:53Z"
+    },
+    {
+      "file": "reuse-policy.html.source/reuse-policy.html",
+      "bytes": 127628,
+      "sha256": "3bcfecc7898bfa63dc1dededce73b507608da923ee19c058cefea7099b908499",
+      "url": "https://www.tuik.gov.tr/Kurumsal/Yasal_Uyari",
+      "retrieved_utc": "2026-09-19T19:39:53Z"
+    },
+    {
+      "file": "population.json.source/population.json",
+      "bytes": 6392,
+      "sha256": "709b0cfaee3174177f231d3ffa41466633b264bcf34d88fd59768139749a9e27",
+      "url": "https://cip.tuik.gov.tr/Home/GetMapData?kaynak=medas&duzey=3&gostergeNo=ADNKS-GK137473-O29001&kayitSayisi=5&period=yillik",
+      "retrieved_utc": "2026-09-19T19:39:54Z"
+    },
+    {
+      "file": "net_migration_rate.json.source/net_migration_rate.json",
+      "bytes": 5714,
+      "sha256": "9b6f061f1c4e7410d9ed9c97c40858276da58ae96c8fac985cbad7e53a6107c2",
+      "url": "https://cip.tuik.gov.tr/Home/GetMapData?kaynak=medas&duzey=3&gostergeNo=ADNKS-GK140832-O29009&kayitSayisi=5&period=yillik",
+      "retrieved_utc": "2026-09-19T19:40:45Z"
+    },
+    {
+      "file": "schooling_years.json.source/schooling_years.json",
+      "bytes": 4956,
+      "sha256": "4d06340d2aed490c6d350a9f1793b57094ba0ea729756b11c63ac96e89a54a5c",
+      "url": "https://cip.tuik.gov.tr/Home/GetMapData?kaynak=medas&duzey=3&gostergeNo=ULE-GK378667484-O29503&kayitSayisi=5&period=yillik",
+      "retrieved_utc": "2026-09-19T19:40:46Z"
+    },
+    {
+      "file": "fertility_rate.json.source/fertility_rate.json",
+      "bytes": 5403,
+      "sha256": "0ceb290584e90117cf2e1bb0ebc0ec5a246652cf84f5d934545ddd65ec809d79",
+      "url": "https://cip.tuik.gov.tr/Home/GetMapData?kaynak=medas&duzey=3&gostergeNo=DGM-GK378140487-O40205&kayitSayisi=5&period=yillik",
+      "retrieved_utc": "2026-09-19T19:40:46Z"
+    }
+  ],
+  "transformations": "See the executable vignette. Raw JSON files are unchanged."
+}

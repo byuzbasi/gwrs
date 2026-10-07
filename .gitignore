@@ -1,0 +1,15 @@
+*.o
+*.so
+*.dll
+*.dylib
+.Rhistory
+.RData
+.DS_Store
+__pycache__/
+*.pyc
+*.Rcheck/
+**/runtime/
+**/results/
+**/invocations/
+**/logs/
+**/work/

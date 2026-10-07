@@ -1,0 +1,3 @@
+"isolate_index","isolate_fips","isolate_name","attached_index","attached_fips","attached_name","distance_m","rule"
+1194,"25019","Nantucket County, Massachusetts",1185,"25001","Barnstable County, Massachusetts",46702.1100851103,"nearest_nonisolated_representative_point_symmetric"
+2946,"53055","San Juan County, Washington",2933,"53029","Island County, Washington",56360.0809074611,"nearest_nonisolated_representative_point_symmetric"

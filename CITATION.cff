@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Please cite this package when using it."
+title: "gwrs: Fast Geographically Weighted Regression and Selection"
+type: software
+version: 0.4.0.9013
+license: GPL-3.0-or-later
+authors:
+  - family-names: Yuzbasi
+    given-names: Bahadir
+repository-code: "https://github.com/byuzbasi/gwrs"

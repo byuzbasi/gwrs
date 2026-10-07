@@ -1,0 +1,7 @@
+^\.git$
+^\.gitignore$
+^\.github$
+^CITATION\.cff$
+^reproducibility$
+^repository-validation$
+^data-raw$

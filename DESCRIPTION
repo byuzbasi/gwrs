@@ -1,0 +1,56 @@
+Package: gwrs
+Type: Package
+Title: Fast Geographically Weighted Regression and Selection
+Version: 0.4.0.9013
+Authors@R: c(
+    person(
+      given = "Bahadir",
+      family = "Yuzbasi",
+      email = "b.yzb@hotmail.com",
+      role = c("aut", "cre", "cph")
+    )
+  )
+Description: Fits geographically weighted regression with ridge, lasso and
+    elastic-net regularization, together with smoothly clipped absolute
+    deviation (SCAD) and minimax concave penalty (MCP) estimators for local
+    variable selection. Provides model fitting, regularization paths,
+    spatial cross-validation, prediction and coefficient summaries.
+    Computational kernels use 'RcppArmadillo' and 'RcppParallel' with
+    reusable nearest-neighbor structures.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 4.1.0)
+Imports:
+    FNN,
+    grDevices,
+    graphics,
+    grid,
+    Matrix,
+    methods,
+    Rcpp,
+    RcppParallel,
+    stats,
+    utils
+LinkingTo:
+    Rcpp,
+    RcppArmadillo,
+    RcppParallel
+Suggests:
+    digest,
+    ggplot2,
+    knitr,
+    jsonlite,
+    patchwork,
+    pkgdown,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+SystemRequirements: C++17, GNU make
+NeedsCompilation: yes
+RoxygenNote: 7.3.3
+Config/testthat/edition: 3
+URL: https://github.com/byuzbasi/gwrs
+BugReports: https://github.com/byuzbasi/gwrs/issues

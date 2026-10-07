@@ -1,0 +1,74 @@
+{
+  "schema": "gwrs-usa-counties-acs2024-study-v3-policy-v1",
+  "author": "Bahadir Yuzbasi",
+  "candidate_package_version": "0.4.0.9006",
+  "package_source": "../../packages/gwrs_0.4.0.9006.tar.gz",
+  "upstream_study": "../study-v2",
+  "full_run_enabled": true,
+  "external_process_parallelism": true,
+  "default_local_workers": 6,
+  "native_threads_per_worker": 1,
+  "blas_threads_per_worker": 1,
+  "heartbeat_seconds": 30,
+  "minimum_free_gib": 6,
+  "recommended_free_gib": 12,
+  "nonconvex_solver": "guarded_block",
+  "convex_path_solver": "guarded_working_set",
+  "working_set_qr_max_size": 128,
+  "screen_fit_max_batches": 16,
+  "screen_fit_max_updates_per_batch": 8,
+  "independent_kkt_review_threshold": 1e-05,
+  "duality_gap_review_relative_threshold": 1e-06,
+  "selection_rule": "Minimum pooled validation SSE divided by complete pooled validation count; exact ties require review",
+  "full": {
+    "outer_folds": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "grid_paths": 88,
+    "method_families": 12,
+    "nested_inner_tasks": 1760,
+    "outer_refit_tasks": 60,
+    "full_tuning_tasks": 440,
+    "full_refit_tasks": 12,
+    "total_tasks": 2272,
+    "expected_oof_predictions_per_method": 3107,
+    "expected_full_predictions_per_method": 3107
+  },
+  "calibration": {
+    "outer": 1,
+    "inner": 2,
+    "local_k": 697,
+    "first_validation_targets": 32,
+    "tasks": 16,
+    "scope": "Historical numerical resource-check settings; not required for portable execution."
+  },
+  "smoke": {
+    "seed": 20260909,
+    "n": 40,
+    "p": 5,
+    "q": [
+      0.3,
+      1.0
+    ],
+    "k": [
+      12,
+      40
+    ],
+    "en_alpha": [
+      0.5
+    ],
+    "n_lambda": 3,
+    "lambda_ratio_min": 0.1,
+    "outer_folds": [
+      1,
+      2,
+      3
+    ],
+    "tasks": 210,
+    "scope": "Small synthetic lifecycle test including a q=1, k=n full-neighborhood candidate; never an empirical result."
+  }
+}

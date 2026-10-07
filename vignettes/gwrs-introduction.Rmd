@@ -1,0 +1,97 @@
+---
+title: "Ridge, Lasso, Elastic Net, SCAD and MCP with gwrs"
+author: "Bahadir Yuzbasi"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Ridge, Lasso, Elastic Net, SCAD and MCP with gwrs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(gwrs)
+```
+
+## Scope and interfaces
+
+This guide covers geographically weighted ridge, lasso, elastic-net, SCAD and
+MCP regression. All five estimators fit a local intercept and local slopes.
+Ridge shrinks coefficients; Lasso, Elastic Net, SCAD and MCP can also set local
+slopes to zero. SCAD and MCP use nonconvex penalties, so convergence does not
+by itself establish a global optimum or recovery of the true active set.
+
+```{r interface-table, echo=FALSE}
+knitr::kable(data.frame(
+  Estimator = c("GWR-Ridge", "GWR-Lasso", "GWR-Elastic Net", "GWR-SCAD", "GWR-MCP"),
+  Formula = c("gwr_ridge()", "gwr_lasso()", "gwr_en()", "gwr_scad()", "gwr_mcp()"),
+  Matrix = c("gwr_ridge_fit()", "gwr_lasso_fit()", "gwr_en_fit()", "gwr_scad_fit()", "gwr_mcp_fit()")
+))
+```
+
+## Run a small example
+
+The installed example constructs a deterministic grid on the unit square,
+uses the first 48 locations for training and the last 16 for prediction,
+and fits all five estimators. Coordinates and distances are dimensionless.
+The example makes no statistical comparison or performance claim.
+
+The demonstration fixes the adaptive bisquare neighborhood at 18 training
+neighbors. It uses penalty 0.08 for the initial fits, Elastic Net mixing 0.5,
+and the default SCAD/MCP concavity constants 3.7 and 3. Spatial CV then uses
+three common folds (seed 42) and the explicit penalty grid 0.2, 0.08, 0.02.
+These are example settings, not the settings used in the manuscript.
+
+```{r run-example}
+example_file <- system.file("examples", "five-methods.R", package = "gwrs")
+source(example_file, local = knitr::knit_global())
+```
+
+Inspect the selected penalty for each method:
+
+```{r selected-penalties}
+lapply(cv, function(z) z$best)
+```
+
+Inspect SCAD coefficients and new-location predictions:
+
+```{r coefficients-and-predictions}
+head(coef(cv$scad$fit))
+head(as.data.frame(prediction))
+```
+
+## Paths, tuning and interpretation
+
+Use `gwr_ridge_path()`, `gwr_lasso_path()`, `gwr_en_path()`,
+`gwr_scad_path()` or `gwr_mcp_path()` when the complete penalty path is needed.
+The predictors passed to matrix interfaces exclude the intercept; the package
+handles it separately. Predictor standardization is enabled by default and
+coefficients are transformed back to the original predictor units.
+
+```{r regularization-path}
+path <- gwr_scad_path(x, train$y, coords = coords, k = 18,
+  lambda = c(0.2, 0.08, 0.02), control = control)
+path$lambda
+```
+
+`cv_gwr_penalized()` accepts an explicit `penalty` and returns CV diagnostics,
+the selected tuning row and, with `refit = TRUE`, a fitted model. Dedicated
+`cv_gwr_scad()` and `cv_gwr_mcp()` interfaces are also available. Training-fold
+standardization and training-only neighbors prevent preprocessing and
+neighborhood leakage. Hold folds fixed for a paired method comparison.
+
+The fixed penalty grid in this example is specified before CV. An adaptive
+bandwidth or mixing-parameter search requires an explicitly designed outer
+search; this guide does not perform such a search. Examine convergence,
+candidate eligibility and numerical diagnostics before interpreting results.
+The default SCAD/MCP solver remains `coordinate`.
+
+## Paper-specific source versions
+
+This guide describes the current package. Reproducing the paper requires its
+frozen simulation (0.4.0) and county-analysis (0.4.0.9006) source versions,
+settings, inputs and software records. Use the accompanying reproduction
+archive for those studies. This demonstration is intentionally small and is
+not a substitute for either numerical experiment.

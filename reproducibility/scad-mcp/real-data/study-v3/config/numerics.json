@@ -1,0 +1,114 @@
+{
+  "schema": "gwrs-usa-counties-acs2024-numerics-v3",
+  "author": "Bahadir Yuzbasi",
+  "approved": "2026-09-20",
+  "n": 3107,
+  "p": 26,
+  "response": "log_median_household_income_2024",
+  "kernel": "bisquare",
+  "adaptive": true,
+  "bandwidth_parameterization": "q is the requested training-sample neighbor fraction; realized k is ceiling(q * n_train), subject only to the documented local stability floor and k <= n_train",
+  "q_min": 0.0346153846153846,
+  "q_min_reference": "54 / 1560, where 54 = 2 * (26 slopes + 1 intercept) and 1560 is the smallest frozen nested-training size",
+  "q": [
+    0.0346153846153846,
+    0.0503005331127043,
+    0.0730930382410875,
+    0.106213431721337,
+    0.154341553580155,
+    0.22427780343294,
+    0.325904022254002,
+    0.473579775151916,
+    0.688171326888818,
+    1.0
+  ],
+  "q_grid_rule": "q_l = exp(log(q_min) + l * (0 - log(q_min)) / 9), l = 0,...,9",
+  "local_stability_floor": "min(n_train, 2 * (p + 1)); a numerical stability rule, not a theorem or a change to the estimator",
+  "full_sample_reference_k": [
+    108,
+    157,
+    228,
+    331,
+    480,
+    697,
+    1013,
+    1472,
+    2139,
+    3107
+  ],
+  "minimum_nested_reference_k": [
+    54,
+    79,
+    115,
+    166,
+    241,
+    350,
+    509,
+    739,
+    1074,
+    1560
+  ],
+  "scad_gamma": 3.7,
+  "mcp_gamma": 3.0,
+  "en_alpha": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "n_lambda": 40,
+  "lambda_ratio_min": 0.001,
+  "ridge_lambda_min": 0.0001,
+  "ridge_lambda_max": 10000,
+  "tolerance": 1e-07,
+  "max_iterations": 5000,
+  "retry_iterations": 20000,
+  "selection_threshold": 1e-10,
+  "outer_folds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "inner_fold_rule": "For outer fold o, each of the four remaining frozen outer-fold labels is used once as the inner validation fold.",
+  "full_tuning_rule": "Each frozen spatial fold is used once as a validation fold; the other four folds form the training set.",
+  "selection": "Minimum pooled validation SSE divided by the complete pooled validation count among numerically valid candidates; exact ties require author review.",
+  "preprocessing": "Training-only predictor means and sqrt(mean squared centered predictor) scales; response remains in natural-log income units.",
+  "lambda_anchor": "Recomputed from each training set. Non-ridge paths use training anchor times fixed ratios; selected path prefixes are rerun with the refit training anchor.",
+  "invalid_candidates": "Retain evidence and mark ineligible; do not remove observations, methods, locations, folds, or grid points.",
+  "boundary_optima": "Report both lambda-path and q-grid boundaries; do not silently expand the frozen grid.",
+  "full_gwr_diagnostics": {
+    "level": "full",
+    "local_inference_adjustment": "BH within coefficient surface",
+    "f_tests": [
+      "F1",
+      "F2",
+      "F3"
+    ],
+    "f3_reporting": "raw p-values and BH adjustment across the 27 coefficient-specific F3 tests",
+    "f_test_reference": "moment-matched approximation conditional on the response-selected neighborhood size",
+    "f_test_block_size": 64,
+    "f_test_memory_limit_mb": 4096
+  },
+  "postanalysis": {
+    "common_graph": "upstream study-v1 frozen/input/spatial/tables/common-neighbor-graph-directed-v1.csv",
+    "common_graph_sha256": "8e6b68826baee90b2dbfebf6d50e448864cc5434c8a0abc6bfb14d12b3ac277c",
+    "moran_lisa_permutations": 9999,
+    "moran_lisa_seed": 20260907,
+    "lisa_adjustment": "BH within method",
+    "distance_bands_km": [
+      0,
+      50,
+      100,
+      200,
+      400
+    ],
+    "main_map_predictors": [
+      "bachelors_or_higher_pct",
+      "unemployment_pct",
+      "broadband_subscription_pct",
+      "manufacturing_industry_pct"
+    ],
+    "selection_gray_semantics": "exact zero under abs(beta_working) <= 1e-10; not a significance decision"
+  }
+}

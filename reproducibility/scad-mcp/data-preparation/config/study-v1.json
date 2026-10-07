@@ -1,0 +1,19 @@
+{
+  "application_id": "nonconvex-gwr-usa-counties-acs2024-v1",
+  "data_vintage": "2020-2024 ACS 5-year Data Profiles",
+  "release_year": 2024,
+  "design_snapshot_date": "2026-09-07",
+  "domain": "contiguous 48 states plus District of Columbia",
+  "excluded_state_fips": ["02", "15", "60", "66", "69", "72", "78"],
+  "response_alias": "log_median_household_income_2024",
+  "response_transform": "natural_log",
+  "predictor_count": 26,
+  "missing_estimate_policy": "complete_case_without_imputation",
+  "missing_moe_policy": "report_without_automatic_exclusion",
+  "moe_confidence_level": 0.90,
+  "raw_snapshot": "2026-09-07",
+  "acquisition_budget_bytes": 52428800,
+  "minimum_free_gib_after_download": 2,
+  "model_fitting_locked": true
+}
+

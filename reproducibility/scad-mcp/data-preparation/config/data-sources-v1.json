@@ -1,0 +1,77 @@
+{
+  "application_id": "nonconvex-gwr-usa-counties-acs2024-data-v1",
+  "application_title": "ACS 2024 county profiles and Census cartographic boundaries",
+  "snapshot_date": "2026-09-07",
+  "minimum_free_gib_after_download": 2,
+  "unknown_size_reserve_gib": 0.05,
+  "minimum_dynamic_download_delay_seconds": 1,
+  "timeout_seconds": 180,
+  "retries": 3,
+  "sources": [
+    {
+      "id": "acs5_profile_2024_counties_batch_01",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile?get=NAME,DP03_0062E,DP03_0062M,DP02_0068PE,DP02_0068PM,DP02_0072PE,DP02_0072PM,DP02_0094PE,DP02_0094PM,DP02_0115PE,DP02_0115PM,DP02_0154PE,DP02_0154PM,DP05_0019PE,DP05_0019PM,DP05_0024PE,DP05_0024PM,DP05_0090PE,DP05_0090PM,DP05_0097PE,DP05_0097PM,DP03_0002PE,DP03_0002PM,DP03_0005PE,DP03_0005PM,DP03_0027PE,DP03_0027PM,DP03_0028PE,DP03_0028PM,DP03_0030PE,DP03_0030PM,DP03_0031PE,DP03_0031PM,DP03_0033PE,DP03_0033PM,DP03_0035PE,DP03_0035PM,DP03_0041PE,DP03_0041PM,DP03_0049PE,DP03_0049PM&for=county:*&key={CENSUS_API_KEY}",
+      "api_key_env": "CENSUS_API_KEY",
+      "filename": "acs5-profile-2024-counties-batch-01.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 100000,
+      "transport": "curl",
+      "skip_probe": true,
+      "license": "U.S. government public data",
+      "notes": "Response plus the first 19 predictors and their 90 percent MOEs; API key is never recorded."
+    },
+    {
+      "id": "acs5_profile_2024_counties_batch_02",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://api.census.gov/data/2024/acs/acs5/profile.html",
+      "url": "https://api.census.gov/data/2024/acs/acs5/profile?get=NAME,DP03_0024PE,DP03_0024PM,DP03_0025E,DP03_0025M,DP04_0003PE,DP04_0003PM,DP04_0014PE,DP04_0014PM,DP04_0047PE,DP04_0047PM,DP04_0058PE,DP04_0058PM,DP04_0079PE,DP04_0079PM&for=county:*&key={CENSUS_API_KEY}",
+      "api_key_env": "CENSUS_API_KEY",
+      "filename": "acs5-profile-2024-counties-batch-02.json",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "json",
+      "min_bytes": 50000,
+      "transport": "curl",
+      "skip_probe": true,
+      "license": "U.S. government public data",
+      "notes": "Remaining seven predictors and their 90 percent MOEs; API key is never recorded."
+    },
+    {
+      "id": "census_counties_2024_5m",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://www.census.gov/geographies/mapping-files/2024/geo/carto-boundary-file.html",
+      "url": "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_county_5m.zip",
+      "filename": "cb_2024_us_county_5m.zip",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "zip",
+      "min_bytes": 2900000,
+      "transport": "curl",
+      "license": "U.S. government public data",
+      "notes": "HTTP Content-Length observed on 2026-09-07: 2,982,952 bytes."
+    },
+    {
+      "id": "census_states_2024_5m",
+      "source_organization": "U.S. Census Bureau",
+      "source_page": "https://www.census.gov/geographies/mapping-files/2024/geo/carto-boundary-file.html",
+      "url": "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_state_5m.zip",
+      "filename": "cb_2024_us_state_5m.zip",
+      "mode": "download",
+      "enabled": true,
+      "required_for_proposal": true,
+      "format": "zip",
+      "min_bytes": 1100000,
+      "transport": "curl",
+      "license": "U.S. government public data",
+      "notes": "HTTP Content-Length observed on 2026-09-07: 1,122,055 bytes."
+    }
+  ]
+}
+
