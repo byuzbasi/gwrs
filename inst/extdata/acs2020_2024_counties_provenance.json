@@ -1,0 +1,29 @@
+{
+  "dataset": "acs2020_2024_counties",
+  "rows": 3107,
+  "columns": 91,
+  "input_sha256": "9dbcca15745f18510ec6966a099c1cffbc25db30e8ed80c2a3ea8b8cc721014e",
+  "source": "U.S. Census Bureau, 2020-2024 ACS five-year Data Profiles",
+  "download_date": "2026-09-07",
+  "prepared_by": "Bahadir Yuzbasi",
+  "paper": "Nonconvex Geographically Weighted Regression for Local Variable Selection",
+  "paper_status": "Manuscript; no DOI assigned",
+  "coordinates": "NAD83 / Conus Albers (EPSG:5070), metres",
+  "excluded": [
+    {
+      "fips": "35011",
+      "name": "De Baca County, New Mexico",
+      "reason": "Missing median household income estimate"
+    },
+    {
+      "fips": "48301",
+      "name": "Loving County, Texas",
+      "reason": "Missing mean commute estimate"
+    }
+  ],
+  "legacy_dataset": "acs2024_counties",
+  "observation_unit": "One county per row",
+  "reference_period": "2020-2024",
+  "acs_product_year": 2024,
+  "analysis_structure": "Single cross-sectional table; no annual stacking or arithmetic averaging"
+}

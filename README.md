@@ -20,8 +20,14 @@ weighted estimators and computational treatment.
 
 ## Installation
 
-This repository is private. Cloning and repository-based installation require
-access granted by the owner. From an authorized local checkout:
+This repository is public. Install directly from GitHub:
+
+```r
+remotes::install_github("byuzbasi/gwrs")
+```
+
+The GitHub command requires the optional `remotes` installation tool.
+From a local checkout:
 
 ```sh
 R CMD INSTALL .
@@ -31,7 +37,7 @@ R >= 4.1, a C++17 compiler and the dependencies in `DESCRIPTION` are required.
 To install a supplied source archive instead:
 
 ```r
-install.packages("gwrs_0.4.0.9013.tar.gz", repos = NULL, type = "source")
+install.packages("gwrs_0.4.0.9013-acs-period-v1.tar.gz", repos = NULL, type = "source")
 ```
 
 Install the declared dependencies before the source archive if they are absent.
@@ -114,15 +120,17 @@ citation("gwrs")
 
 ## County dataset
 
+This is a single cross-sectional table with one row per county. The 2024 ACS five-year product contains Census Bureau period estimates based on survey data collected during 2020–2024. The analysis uses these published estimates directly: separate annual observations are neither stacked nor arithmetically averaged. The 2024 suffix in the retained income column names identifies the ACS product and the inflation-adjustment year, not a single-year observation. The legacy dataset name `acs2024_counties` remains available for compatibility.
+
 The package includes the documented **2020–2024 ACS five-year county dataset**:
 3,107 counties and 91 columns, including the study response, 26 predictors,
 90% margins of error, controlled-MOE flags, geographic identifiers, projected
 coordinates and spatial folds.
 
 ```r
-data(acs2024_counties, package = "gwrs")
-head(acs2024_counties[, c("fips", "county_name", "median_household_income_2024")])
-help("acs2024_counties", package = "gwrs")
+data(acs2020_2024_counties, package = "gwrs")
+head(acs2020_2024_counties[, c("fips", "county_name", "median_household_income_2024")])
+help("acs2020_2024_counties", package = "gwrs")
 citation("gwrs")
 ```
 
@@ -138,8 +146,8 @@ Current package version: **0.4.0.9013**. The paper's simulation used the recorde
 **0.4.0** implementation and the county analysis used **0.4.0.9006**. Their
 versioned source archives and analysis scripts are preserved separately; the
 current package version must not be substituted silently in a historical run.
-See [reproducibility records](reproducibility/README.md). A private repository
-link does not grant access to reviewers; the separate code archive can be
-supplied with the manuscript.
+See the publicly accessible [reproducibility records](reproducibility/README.md).
+The frozen reproduction ZIP and historical engines are preserved separately
+from the current package source.
 
 Author and maintainer: Bahadir Yuzbasi. License: GPL (>= 3).
