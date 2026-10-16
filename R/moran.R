@@ -10,6 +10,12 @@
 #' @param row_standardize Whether non-self spatial weights are row-standardized.
 #' @param seed Nonnegative deterministic C++ permutation seed.
 #' @param alpha Significance level used for LISA cluster labels.
+#' @param weights Optional nonnegative numeric or sparse spatial weight matrix,
+#'   in observation order, with a zero diagonal. When supplied it replaces the
+#'   fitted kernel graph. Directed weights are allowed; no symmetrization occurs.
+#' @param zero_policy For explicit weights, `"error"` rejects islands; `"keep"`
+#'   retains them in global centering and permutations and reports local NA.
+#' @param memory_limit_mb Workspace guard for the explicit-weight calculation.
 #' @param ... Unused.
 #'
 #' @return `gwr_moran()` returns a `gwrs_moran` object. `gwr_local_moran()`
@@ -45,10 +51,13 @@ gwr_moran <- function(object,
                       permutations = 999L,
                       row_standardize = TRUE,
                       seed = 1L,
-                      ...) {
+                      ..., weights = NULL,
+                      zero_policy = c("error", "keep"),
+                      memory_limit_mb = 512) {
   raw <- compute_gwr_moran(
     object, permutations = permutations,
-    row_standardize = row_standardize, seed = seed
+    row_standardize = row_standardize, seed = seed, weights = weights,
+    zero_policy = zero_policy, memory_limit_mb = memory_limit_mb
   )
   assemble_gwr_moran(raw, object, permutations, row_standardize, seed)
 }
@@ -67,6 +76,12 @@ assemble_gwr_moran <- function(raw, object, permutations, row_standardize, seed)
     seed = as.integer(seed),
     permuted_I = raw$permuted_I
   )
+  if (!is.null(raw$weight_specification)) {
+    result$weights <- raw$weight_specification
+    result$kernel <- "user_supplied"
+    result$adaptive <- NA
+    result$bandwidth <- NULL
+  }
   class(result) <- "gwrs_moran"
   result
 }
@@ -78,11 +93,14 @@ gwr_local_moran <- function(object,
                             row_standardize = TRUE,
                             seed = 1L,
                             alpha = 0.05,
-                            ...) {
+                            ..., weights = NULL,
+                            zero_policy = c("error", "keep"),
+                            memory_limit_mb = 512) {
   validate_lisa_alpha(alpha)
   raw <- compute_gwr_moran(
     object, permutations = permutations,
-    row_standardize = row_standardize, seed = seed
+    row_standardize = row_standardize, seed = seed, weights = weights,
+    zero_policy = zero_policy, memory_limit_mb = memory_limit_mb
   )
   assemble_gwr_local_moran(raw, object, permutations, row_standardize, seed, alpha)
 }
@@ -120,6 +138,10 @@ assemble_gwr_local_moran <- function(raw, object, permutations,
     alpha = alpha,
     kernel = object$kernel
   )
+  if (!is.null(raw$weight_specification)) {
+    attr(result, "settings")$weights <- raw$weight_specification
+    attr(result, "settings")$kernel <- "user_supplied"
+  }
   class(result) <- c("gwrs_local_moran", "data.frame")
   result
 }
@@ -128,9 +150,12 @@ assemble_gwr_local_moran <- function(raw, object, permutations,
 #' @export
 gwr_moran_diagnostics <- function(object, permutations = 999L,
                                    row_standardize = TRUE, seed = 1L,
-                                   alpha = 0.05, ...) {
+                                   alpha = 0.05, ..., weights = NULL,
+                                   zero_policy = c("error", "keep"),
+                                   memory_limit_mb = 512) {
   validate_lisa_alpha(alpha)
-  raw <- compute_gwr_moran(object, permutations, row_standardize, seed)
+  raw <- compute_gwr_moran(object, permutations, row_standardize, seed,
+    weights, zero_policy, memory_limit_mb)
   list(global = assemble_gwr_moran(raw, object, permutations, row_standardize, seed),
        local = assemble_gwr_local_moran(raw, object, permutations,
                                        row_standardize, seed, alpha))
@@ -143,7 +168,15 @@ validate_lisa_alpha <- function(alpha) {
   }
 }
 
-compute_gwr_moran <- function(object, permutations, row_standardize, seed) {
+compute_gwr_moran <- function(object, permutations, row_standardize, seed,
+                              weights = NULL, zero_policy = c("error", "keep"),
+                              memory_limit_mb = 512) {
+  if (!is.null(weights)) {
+    if (!inherits(object, "gwrs_fit")) stop("`object` must be a gwrs_fit.", call. = FALSE)
+    return(compute_gwrs_weighted_moran(object$residuals, weights, permutations,
+      row_standardize, seed, zero_policy, object$control$n_threads,
+      object$control$grain_size, memory_limit_mb))
+  }
   validate_gwrs_diagnostic_object(object)
   permutations <- as.integer(permutations)
   seed <- as.integer(seed)
@@ -225,4 +258,50 @@ plot.gwrs_local_moran <- function(x,
     bty = if (is.null(coords)) "n" else "o", bg = "white", cex = 0.8
   )
   invisible(x)
+}
+
+# Shared by the explicit-weight public diagnostic and GWR/OLS selection records.
+validate_gwrs_moran_weights <- function(weights, n, zero_policy = "error") {
+  zero_policy <- match.arg(zero_policy, c("error", "keep"))
+  if (!(is.matrix(weights) && is.numeric(weights)) && !inherits(weights, "Matrix"))
+    stop("`weights` must be a numeric or Matrix spatial weight matrix.", call. = FALSE)
+  if (!identical(as.integer(dim(weights)), c(as.integer(n), as.integer(n))))
+    stop("`weights` must have one row and column per observation.", call. = FALSE)
+  weights <- methods::as(Matrix::Matrix(weights, sparse = TRUE), "generalMatrix")
+  weights <- methods::as(weights, "dMatrix")
+  weights <- methods::as(weights, "CsparseMatrix")
+  values <- methods::slot(weights, "x")
+  if (any(!is.finite(values)) || any(values < 0) || any(Matrix::diag(weights) != 0))
+    stop("`weights` must be finite, nonnegative and have a zero diagonal.", call. = FALSE)
+  mass <- Matrix::rowSums(weights)
+  if (any(!is.finite(mass)) || sum(mass) <= 0)
+    stop("`weights` must contain finite positive total weight.", call. = FALSE)
+  if (zero_policy == "error" && any(mass == 0))
+    stop("`weights` contain islands; explicitly use zero_policy = 'keep'.", call. = FALSE)
+  weights
+}
+
+compute_gwrs_weighted_moran <- function(residuals, weights, permutations = 999L,
+    row_standardize = TRUE, seed = 1L, zero_policy = c("error", "keep"),
+    n_threads = 1L, grain_size = 16L, memory_limit_mb = 512) {
+  zero_policy <- match.arg(zero_policy)
+  weights <- validate_gwrs_moran_weights(weights, length(residuals), zero_policy)
+  for (value in list(permutations, seed)) {
+    if (!is.numeric(value) || length(value) != 1L || !is.finite(value) ||
+        value < 0 || value != floor(value) || value >= .Machine$integer.max)
+      stop("`permutations` and `seed` must be nonnegative integers.", call. = FALSE)
+  }
+  if (!is.logical(row_standardize) || length(row_standardize) != 1L || is.na(row_standardize))
+    stop("`row_standardize` must be TRUE or FALSE.", call. = FALSE)
+  if (!is.numeric(memory_limit_mb) || length(memory_limit_mb) != 1L ||
+      !is.finite(memory_limit_mb) || memory_limit_mb <= 0)
+    stop("`memory_limit_mb` must be positive and finite.", call. = FALSE)
+  raw <- cpp_gwr_moran_weights(as.double(residuals), weights, row_standardize,
+    zero_policy == "keep", as.integer(permutations), as.double(seed),
+    n_threads, grain_size, memory_limit_mb)
+  raw$weight_specification <- list(source = "user_supplied", n = length(residuals),
+    row_standardize = row_standardize, zero_policy = zero_policy,
+    islands = as.integer(raw$islands), directed = !Matrix::isSymmetric(weights),
+    inference = "exploratory total residual randomization; no refitting or selection adjustment")
+  raw
 }

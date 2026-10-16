@@ -41,7 +41,8 @@ stationarity), and coefficient-specific F3 spatial-variability diagnostics.
 Exact first and second operator moments are computed in neighbor blocks.
 The F reference distributions are moment-matched approximations for a fixed,
 identified Gaussian GWR smoother, not exact finite-sample distributions.
-Penalized fits require `allow_approximate = TRUE` and remain exploratory.
+All reference p-values are exploratory and have no established calibration.
+Penalized fits additionally require `allow_approximate = TRUE`.
 }
 \details{
 F3 tests spatial variation of an entire coefficient surface; it is
@@ -50,6 +51,17 @@ F3 tests spatial variation of an entire coefficient surface; it is
   Selection maps should label gray as "not selected", with inferential
   decisions displayed separately. Exact all-coefficient second moments can
   be expensive even though no dense spatial smoother is stored.
+
+  For fixed weights, let nu be the OLS residual degrees of freedom,
+  delta1 the local residual trace, and eta1 = nu - delta1. When the
+  denominators are positive, F2 = nu/eta1 - (delta1/eta1) * F1.
+  Thus F1 and F2 are decreasing affine transforms of one RSS ratio.
+  Separate moment-matched F references can give different p-values; these
+  are not independent evidence. Numerator/denominator quadratic forms are
+  generally dependent, so exact operator moments alone do not establish an
+  F law, correct test size, or valid inference after model selection.
+  F3 calibration with all coefficients constant would not by itself justify
+  testing one constant coefficient with spatially varying nuisance effects.
 }
 \examples{
 quake <- datasets::quakes[1:36, ]

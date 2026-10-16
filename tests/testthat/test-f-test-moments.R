@@ -154,3 +154,58 @@ test_that("F workspace and malformed inputs fail before silent fallbacks", {
   singular$x_scale[2] <- singular$x_scale[1]
   expect_error(gwr_diagnostic_tests(singular), "local operator unavailable")
 })
+
+test_that("contiguous blocks preserve dense moments for every kernel and fixed weights", {
+  e <- make_spatial_example(n = 24, p = 2, seed = 1403)
+  design <- cbind(1, e$x)
+  n <- nrow(design)
+  for (kernel in c("bisquare", "gaussian", "exponential", "tricube", "boxcar")) {
+    fit <- gwr_fit(e$x, e$y, coords = e$coords, k = n, kernel = kernel,
+      bandwidth = 0.9, standardize = FALSE, control = gwrs_control(n_threads = 1))
+    smooth <- matrix(0, n, n)
+    operators <- lapply(seq_len(ncol(design)), function(j) matrix(0, n, n))
+    for (i in seq_len(n)) {
+      idx <- fit$neighbors$index[, i]
+      u <- fit$neighbors$distance[, i] / 0.9
+      w <- switch(kernel, bisquare = ifelse(u < 1, (1 - u^2)^2, 0),
+        gaussian = exp(-u^2 / 2), exponential = exp(-u),
+        tricube = ifelse(u < 1, (1 - u^3)^3, 0), boxcar = as.numeric(u <= 1))
+      local <- design[idx, , drop = FALSE]
+      map <- solve(crossprod(local, local * w), t(local * w))
+      smooth[i, idx] <- design[i, , drop = FALSE] %*% map
+      for (j in seq_along(operators)) operators[[j]][i, idx] <- map[j, ]
+    }
+    q <- crossprod(diag(n) - smooth)
+    centered <- lapply(operators, function(op) crossprod(sweep(op, 2, colMeans(op))) / n)
+    for (block in c(1, 7, 64)) {
+      test <- gwr_diagnostic_tests(fit, block_size = block)
+      expect_equal(test$diagnostics$L_delta1, sum(diag(q)), tolerance = 1e-10)
+      expect_equal(test$diagnostics$L_delta2, sum(q^2), tolerance = 1e-10)
+      expect_equal(test$diagnostics$coefficient_moments$gamma1,
+        vapply(centered, function(b) sum(diag(b)), numeric(1)), tolerance = 1e-10)
+      expect_equal(test$diagnostics$coefficient_moments$gamma2,
+        vapply(centered, function(b) sum(b^2), numeric(1)), tolerance = 1e-10)
+    }
+  }
+})
+
+test_that("F1 and F2 share one ratio and do not imply independent calibrated evidence", {
+  e <- make_spatial_example(n = 30, p = 2, seed = 1404)
+  fit <- gwr_fit(e$x, e$y, coords = e$coords, k = 22,
+    kernel = "gaussian", control = gwrs_control(n_threads = 1))
+  tests <- gwr_diagnostic_tests(fit)
+  nu <- tests$diagnostics$df_ols
+  delta <- tests$diagnostics$L_delta1
+  f1 <- tests$global_tests$statistic[1]
+  f2 <- tests$global_tests$statistic[2]
+  expect_equal(f2, nu / (nu - delta) - delta / (nu - delta) * f1, tolerance = 1e-12)
+  expect_true(tests$validity$exploratory)
+  expect_false(tests$validity$reference_calibrated)
+  expect_false(tests$validity$f1_f2_independent_evidence)
+  expect_false(tests$validity$quadratic_form_independence_established)
+  expect_output(print(tests), "do not provide independent evidence")
+  # A deterministic Gaussian quadratic-form calculation, not a calibration simulation.
+  ref <- dense_conditional_f_operators(fit)
+  r0 <- diag(nrow(e$x)) - tcrossprod(qr.Q(qr(cbind(1, e$x))))
+  expect_gt(2 * sum(ref$q * r0), 0) # Cov(y' Q y, y' R0 y), with unit noise variance.
+})

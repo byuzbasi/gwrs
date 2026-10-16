@@ -1,10 +1,23 @@
 cff-version: 1.2.0
-message: "Please cite this package when using it."
+message: "Please cite gwrs when using the software, and acknowledge the accompanying paper and Census sources when using its prepared ACS data."
 title: "gwrs: Fast Geographically Weighted Regression and Selection"
 type: software
-version: 0.4.0.9013
+version: 0.4.0.9015
 license: GPL-3.0-or-later
 authors:
   - family-names: Yuzbasi
     given-names: Bahadir
 repository-code: "https://github.com/byuzbasi/gwrs"
+url: "https://github.com/byuzbasi/gwrs"
+abstract: >-
+  Geographically weighted Ridge, Lasso, Elastic Net, SCAD and MCP in R,
+  with local variable selection, spatial cross-validation, prediction,
+  regularization paths, joint ordinary-GWR model selection and a
+  documented ACS county analysis dataset.
+keywords:
+  - geographically weighted regression
+  - local variable selection
+  - SCAD
+  - MCP
+  - spatial cross-validation
+  - R

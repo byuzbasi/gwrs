@@ -6,7 +6,16 @@
 \alias{gwr_moran_diagnostics}
 \title{Sparse residual Moran diagnostics}
 \usage{
-gwr_moran(object, permutations = 999L, row_standardize = TRUE, seed = 1L, ...)
+gwr_moran(
+  object,
+  permutations = 999L,
+  row_standardize = TRUE,
+  seed = 1L,
+  ...,
+  weights = NULL,
+  zero_policy = c("error", "keep"),
+  memory_limit_mb = 512
+)
 
 gwr_local_moran(
   object,
@@ -14,7 +23,10 @@ gwr_local_moran(
   row_standardize = TRUE,
   seed = 1L,
   alpha = 0.05,
-  ...
+  ...,
+  weights = NULL,
+  zero_policy = c("error", "keep"),
+  memory_limit_mb = 512
 )
 
 gwr_moran_diagnostics(
@@ -23,7 +35,10 @@ gwr_moran_diagnostics(
   row_standardize = TRUE,
   seed = 1L,
   alpha = 0.05,
-  ...
+  ...,
+  weights = NULL,
+  zero_policy = c("error", "keep"),
+  memory_limit_mb = 512
 )
 }
 \arguments{
@@ -36,6 +51,15 @@ gwr_moran_diagnostics(
 \item{seed}{Nonnegative deterministic C++ permutation seed.}
 
 \item{...}{Unused.}
+
+\item{weights}{Optional nonnegative numeric or sparse spatial weight matrix,
+in observation order, with a zero diagonal. When supplied it replaces the
+fitted kernel graph. Directed weights are allowed; no symmetrization occurs.}
+
+\item{zero_policy}{For explicit weights, `"error"` rejects islands; `"keep"`
+retains them in global centering and permutations and reports local NA.}
+
+\item{memory_limit_mb}{Workspace guard for the explicit-weight calculation.}
 
 \item{alpha}{Significance level used for LISA cluster labels.}
 }

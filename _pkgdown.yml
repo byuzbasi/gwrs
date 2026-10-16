@@ -1,0 +1,105 @@
+destination: docs
+url: https://byuzbasi.github.io/gwrs/
+development:
+  mode: release
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#087f80"
+    secondary: "#15354b"
+    bg: "#ffffff"
+    fg: "#183044"
+    base_font: "system-ui"
+    heading_font: "system-ui"
+    code_font: "monospace"
+    border-radius: "0.65rem"
+home:
+  title: "gwrs: spatial regression and joint GWR model selection in R"
+  description: >
+    Joint ordinary-GWR model selection and geographically weighted Ridge,
+    Lasso, Elastic Net, SCAD and MCP in R,
+    with spatial cross-validation, prediction and a documented ACS county dataset.
+  sidebar:
+    structure: [links, license, citation, authors]
+navbar:
+  structure:
+    left: [intro, reference, guides, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: articles/gwrs-introduction.html
+    guides:
+      text: Explore
+      menu:
+      - text: Joint GWR model selection
+        href: articles/gwrs-selection.html
+      - text: ACS county data
+        href: articles/acs-county-data.html
+      - text: Local selection in the county study
+        href: articles/local-selection.html
+      - text: Reproduce the paper
+        href: articles/reproduce-paper.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/byuzbasi/gwrs
+      aria-label: GitHub repository
+reference:
+- title: Select an ordinary GWR model
+  desc: Joint subset, kernel and bandwidth selection on a common sample.
+  contents:
+  - gwr_fit
+  - gwr_select
+  - gwr_select_verify
+  - summary.gwrs_selection
+- title: Fit a model
+  desc: Formula and matrix interfaces for the five documented estimators.
+  contents:
+  - gwr_reference_formulas
+  - gwr_reference_fits
+  - gwr_nonconvex
+  - gwr_nonconvex_fit
+- title: Tune SCAD and MCP
+  contents:
+  - gwr_nonconvex_path
+  - cv_gwr_nonconvex
+  - gwr_nonconvex_cv_cache
+- title: Predict and inspect
+  contents:
+  - predict.gwrs_fit
+  - summary.gwrs_fit
+- title: Diagnostics and interpretation
+  desc: Descriptive checks and explicitly exploratory reference calculations.
+  contents:
+  - gwr_diagnostics
+  - gwr_local_inference
+  - gwr_diagnostic_tests
+  - gwr_moran
+  - gwr_local_collinearity
+  - gwr_global_collinearity
+- title: Spatial inputs and numerical controls
+  contents:
+  - gwr_neighbors
+  - spatial_folds
+  - gwrs_control
+- title: County data
+  contents:
+  - acs2020_2024_counties
+  - acs2024_counties
+- title: internal
+  contents:
+  - gwrs-package
+articles:
+- title: Start here
+  contents:
+  - gwrs-introduction
+  - gwrs-selection
+- title: Data and reproducibility
+  contents:
+  - articles/acs-county-data
+  - articles/local-selection
+  - articles/reproduce-paper
+footer:
+  structure:
+    left: developed_by
+    right: built_with

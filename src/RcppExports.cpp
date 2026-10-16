@@ -387,6 +387,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_gwr_moran_weights
+Rcpp::List cpp_gwr_moran_weights(const arma::vec& residuals, const arma::sp_mat& spatial_weights, const bool row_standardize, const bool keep_islands, const int permutations, const double seed, const int n_threads, const int grain_size, const double memory_limit_mb);
+RcppExport SEXP _gwrs_cpp_gwr_moran_weights(SEXP residualsSEXP, SEXP spatial_weightsSEXP, SEXP row_standardizeSEXP, SEXP keep_islandsSEXP, SEXP permutationsSEXP, SEXP seedSEXP, SEXP n_threadsSEXP, SEXP grain_sizeSEXP, SEXP memory_limit_mbSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type residuals(residualsSEXP);
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type spatial_weights(spatial_weightsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type row_standardize(row_standardizeSEXP);
+    Rcpp::traits::input_parameter< const bool >::type keep_islands(keep_islandsSEXP);
+    Rcpp::traits::input_parameter< const int >::type permutations(permutationsSEXP);
+    Rcpp::traits::input_parameter< const double >::type seed(seedSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_threads(n_threadsSEXP);
+    Rcpp::traits::input_parameter< const int >::type grain_size(grain_sizeSEXP);
+    Rcpp::traits::input_parameter< const double >::type memory_limit_mb(memory_limit_mbSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_gwr_moran_weights(residuals, spatial_weights, row_standardize, keep_islands, permutations, seed, n_threads, grain_size, memory_limit_mb));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gwrs_cpp_gwr_model_diagnostics", (DL_FUNC) &_gwrs_cpp_gwr_model_diagnostics, 19},
@@ -406,6 +425,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gwrs_cpp_gwr_local_collinearity", (DL_FUNC) &_gwrs_cpp_gwr_local_collinearity, 11},
     {"_gwrs_cpp_gwr_local_residual_diagnostics", (DL_FUNC) &_gwrs_cpp_gwr_local_residual_diagnostics, 9},
     {"_gwrs_cpp_gwr_moran", (DL_FUNC) &_gwrs_cpp_gwr_moran, 11},
+    {"_gwrs_cpp_gwr_moran_weights", (DL_FUNC) &_gwrs_cpp_gwr_moran_weights, 9},
     {NULL, NULL, 0}
 };
 

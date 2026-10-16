@@ -14,6 +14,16 @@
       "file": "gwrs_0.4.0.9013-acs-period-v1.tar.gz",
       "bytes": 812529,
       "sha256": "be01fac26b2fea5fbea45c2e25939a670ac3ec9eb6d6a4447c9c4a0876097f12"
+    },
+    {
+      "file": "gwrs_0.4.0.9014.tar.gz",
+      "bytes": 3931815,
+      "sha256": "bf2aa3723484ec0e8cb67711962a7bb29ff1cd876e8b9e741f712b7dd8592344"
+    },
+    {
+      "file": "gwrs_0.4.0.9015.tar.gz",
+      "bytes": 3943590,
+      "sha256": "b1a7b550ae508a65855cdb73dfcc6b7200346c38a8149b6eefe4b34aec895cc5"
     }
   ]
 }

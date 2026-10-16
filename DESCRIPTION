@@ -1,7 +1,7 @@
 Package: gwrs
 Type: Package
 Title: Fast Geographically Weighted Regression and Selection
-Version: 0.4.0.9013
+Version: 0.4.0.9015
 Authors@R: c(
     person(
       given = "Bahadir",
@@ -15,6 +15,8 @@ Description: Fits geographically weighted regression with ridge, lasso and
     deviation (SCAD) and minimax concave penalty (MCP) estimators for local
     variable selection. Provides model fitting, regularization paths,
     spatial cross-validation, prediction and coefficient summaries.
+    Joint unpenalized Gaussian GWR selection compares predictor subsets,
+    kernels and bandwidths on a common sample.
     Computational kernels use 'RcppArmadillo' and 'RcppParallel' with
     reusable nearest-neighbor structures.
 License: GPL (>= 3)
@@ -52,5 +54,6 @@ SystemRequirements: C++17, GNU make
 NeedsCompilation: yes
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
-URL: https://github.com/byuzbasi/gwrs
+URL: https://byuzbasi.github.io/gwrs/,
+    https://github.com/byuzbasi/gwrs
 BugReports: https://github.com/byuzbasi/gwrs/issues

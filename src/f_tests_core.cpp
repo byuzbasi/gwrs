@@ -136,15 +136,17 @@ struct MapWorker : public RcppParallel::Worker {
   }
 };
 
-// Right multiplication by an implicit unit-vector block.
+// Store operator blocks transposed: each location's block entries are contiguous.
+// Neighbor indices and edge values can then be shared across all block columns.
 arma::mat extract_columns(const arma::mat& values, const arma::umat& index,
                           arma::uword first, arma::uword width) {
-  arma::mat answer(index.n_cols, width, arma::fill::zeros);
+  arma::mat answer(width, index.n_cols, arma::fill::zeros);
   for (arma::uword i = 0; i < index.n_cols; ++i) {
+    double* dest = answer.colptr(i);
     for (arma::uword row = 0; row < index.n_rows; ++row) {
       const arma::uword source = index(row, i) - 1;
       if (source >= first && source < first + width)
-        answer(i, source - first) += values(row, i);
+        dest[source - first] += values(row, i);
     }
   }
   return answer;
@@ -152,13 +154,18 @@ arma::mat extract_columns(const arma::mat& values, const arma::umat& index,
 
 arma::mat transpose_apply(const arma::mat& values, const arma::umat& index,
                           const arma::mat& rhs) {
-  arma::mat answer(index.n_cols, rhs.n_cols, arma::fill::zeros);
-  for (arma::uword column = 0; column < rhs.n_cols; ++column) {
-    double* dest = answer.colptr(column);
-    const double* input = rhs.colptr(column);
-    for (arma::uword i = 0; i < index.n_cols; ++i)
-      for (arma::uword row = 0; row < index.n_rows; ++row)
-        dest[index(row, i) - 1] += values(row, i) * input[i];
+  const arma::uword width = rhs.n_rows;
+  arma::mat answer(width, index.n_cols, arma::fill::zeros);
+  for (arma::uword i = 0; i < index.n_cols; ++i) {
+    const double* input = rhs.colptr(i);
+    for (arma::uword row = 0; row < index.n_rows; ++row) {
+      double* dest = answer.colptr(index(row, i) - 1);
+      const double value = values(row, i);
+      // The location/edge accumulation order is unchanged for each entry.
+      // Only independent block columns are moved to the contiguous inner loop.
+      for (arma::uword column = 0; column < width; ++column)
+        dest[column] += value * input[column];
+    }
   }
   return answer;
 }
@@ -184,17 +191,17 @@ struct MomentWorker : public RcppParallel::Worker {
       arma::mat result;
       if (residual) {
         right *= -1;
-        for (arma::uword c = 0; c < width; ++c) right(first + c, c) += 1;
+        for (arma::uword c = 0; c < width; ++c) right(c, first + c) += 1;
         // Q E = (I-S)' (I-S) E, including all off-diagonal contributions.
         result = right - transpose_apply(values, index, right);
       } else {
-        right.each_row() -= arma::mean(right, 0);
+        right.each_col() -= arma::mean(right, 1);
         // B_j E = C_j' J C_j E / n.
         result = transpose_apply(values, index, right) / static_cast<double>(n);
       }
       for (arma::uword c = 0; c < width; ++c) {
-        diagonal[first + c] = result(first + c, c);
-        squares[first + c] = arma::dot(result.col(c), result.col(c));
+        diagonal[first + c] = result(c, first + c);
+        squares[first + c] = arma::dot(result.row(c), result.row(c));
       }
     }
   }

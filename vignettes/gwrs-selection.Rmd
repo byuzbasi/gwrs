@@ -1,0 +1,197 @@
+---
+title: "Joint model selection for ordinary GWR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Joint model selection for ordinary GWR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(gwrs)
+```
+
+`gwr_select()` accepts a response and candidate predictor scope, then compares
+ordinary Gaussian GWR fits across predictor subsets, kernels and bandwidths.
+Each candidate is unpenalized. The default ranking criterion is AICc; AIC,
+BIC, GCV and conditional leave-one-out squared error are reported alongside it.
+The selected GWR is the best eligible candidate under the chosen criterion
+within the evaluated search space.
+
+## A small reproducible demonstration
+
+The following simulated observations have unitless planar coordinates. They
+illustrate the interface and are not empirical evidence about a real region.
+Real applications should supply suitable projected coordinates; the package
+uses Euclidean distance and does not transform coordinates.
+
+```{r example}
+set.seed(1401)
+dat <- data.frame(east = runif(28), north = runif(28),
+                  x1 = rnorm(28), x2 = rnorm(28))
+dat$y <- 1 + (1 + dat$east) * dat$x1 + rnorm(28, sd = 0.5)
+selection <- gwr_select(y ~ x1 + x2, dat, c("east", "north"),
+  kernels = c("bisquare", "gaussian"), k = c(20, 28),
+  control = gwrs_control(n_threads = 1), verbose = FALSE)
+selection
+knitr::kable(selection$best_by_criterion[, c("criterion", "comparison",
+  "terms", "kernel", "k", "criterion_value")], digits = 3)
+```
+
+`best_model` is a fitted GWR object supporting `coef()` and `predict()`;
+`best_overall` also allows OLS to win. The corresponding metadata are
+`selected` and `selected_overall`. `ranking` retains every evaluated candidate,
+including failed or invalid fits and their reasons. `summary(selection)` shows
+leading candidates and the selected model's conditional F1/F2/F3 diagnostics.
+
+## Local coefficient p-values and BH adjustment
+
+By default, only the selected GWR is refitted with full diagnostics. Candidate
+search fits retain standard diagnostics, so local inference is not repeated
+for every subset/kernel/bandwidth combination. The table below contains
+two-sided coefficient-zero reference p-values and BH-adjusted p-values.
+These differ from F3, which concerns spatial constancy of a whole surface.
+
+```{r local-inference}
+local <- selection$local_inference
+local$status
+display <- head(local$local[, c("location", "coefficient", "estimate",
+  "standard_error", "statistic", "p_value", "p_adjusted")])
+display$p_value <- format.pval(display$p_value, digits = 3)
+display$p_adjusted <- format.pval(display$p_adjusted, digits = 3)
+knitr::kable(display, digits = 4)
+local$settings[c("adjust", "adjust_scope", "exploratory",
+                 "reference_calibrated", "selection_conditioned")]
+```
+
+P-values are formatted for display; `local$local` retains the numeric values.
+
+The default BH family is the locations for each design-matrix coefficient
+separately, including the intercept. Factor contrasts are separate
+coefficients. To adjust over every local coefficient test in the selected
+model instead, call the same inference function with an explicit scope:
+
+```{r global-local-adjustment}
+all_local_tests <- gwr_local_inference(selection, adjust = "BH",
+                                       adjust_scope = "global")
+all_local_tests$summary
+```
+
+All local p-values are exploratory. Neither BH scope accounts for the
+response-based selection of predictors, kernel and bandwidth; BH does not
+establish calibration of the underlying reference p-values or remove
+smoothing bias and dependence between overlapping neighborhoods. No
+post-selection or calibrated FDR guarantee is claimed. Local p-values never
+affect model ranking. The selected model and whether the search completed
+are retained in `local$settings$selection`.
+
+Set `local_inference = FALSE` in `gwr_select()` to skip full diagnostics and
+local inference; the result records `local_inference_status = "disabled"`.
+No eligible GWR gives NULL inference with an explicit status. Incomplete
+searches identify their inference as provisional. Unavailable reference
+degrees of freedom or coefficient statistics produce NA p-values and
+significance flags; the function does not silently switch to a normal
+approximation. `df = "normal"` is an explicit option for standalone inference.
+
+## Define and inspect the search
+
+Factors and multi-column formula terms are selected as whole groups.
+Interactions require their main effects in the full scope and retain all
+declared lower-order parents. `required` accepts term labels or a one-sided
+formula. Required terms also constrain the OLS comparison; intercept-only OLS
+is compared only when no terms are required. Intercept-only GWR is not fitted.
+
+All candidates use the same full-scope observations and design coding. Missing
+or nonfinite values cause an error, with no silent sample deletion or
+imputation. Standardization defaults to `FALSE`; setting it to `TRUE` is an
+explicit preprocessing choice passed to the existing fitting function.
+
+```{r design}
+design <- gwr_select(y ~ x1 + x2, dat, c("east", "north"), dry_run = TRUE)
+design
+```
+
+The default exhaustive search considers every nonempty hierarchy-valid subset
+and all five kernels. With adaptive bandwidth and no `k`, each subset searches
+all integers from its expanded predictor count plus two through the sample
+size. `k` includes the target observation. Adaptive Gaussian and exponential
+fits retain only these `k` neighbors, matching the existing package semantics.
+
+For fixed-distance selection, set `bandwidth = "fixed"` and provide `bw` in
+coordinate units. All observations are retained in the neighbor representation;
+compact kernels assign zero weight outside their radius. Without `bw`, a
+30-value logarithmic grid spans the smallest positive pairwise distance to
+twice the largest. A finite grid gives no continuous-bandwidth guarantee.
+Both modes can be requested with `bandwidth = c("adaptive", "fixed")`.
+
+`max_models` rejects oversized exhaustive designs before fitting. For a larger
+scope, explicitly choose `search = "stepwise"`: full-model and
+required-plus-single-term seeds are followed by best-improvement additions and
+deletions. Each visited subset searches the complete requested kernel/bandwidth
+grid. This deterministic search has no global-optimum guarantee.
+
+## Diagnostics and scientific limits
+
+Eligibility requires full local predictor rank, direct converged solves,
+finite fitted quantities and positive residual effective degrees of freedom.
+Each ranking criterion separately requires a finite score. Low effective
+sample size, high leverage, collinearity and grid-boundary solutions are
+reported as descriptive flags. Diagnostic p-values do not affect ranking.
+
+F3 tests spatial variability of coefficients, not whether they are zero.
+F reference distributions are moment-matched approximations. All F and Moran
+p-values are raw, conditional and exploratory; selection and multiplicity
+have not been adjusted for. Conditional LOO holds the fitted neighborhoods and
+weights fixed. It does not replace external or nested spatial validation that
+repeats model selection inside training folds.
+
+For a fixed smoother, F1 and F2 are decreasing affine transformations of the
+same residual-sum-of-squares ratio. Their separate moment-matched reference
+distributions may give different p-values. These are not two independent
+pieces of evidence, and exact operator moments do not establish calibration
+of either reference distribution. F3 likewise has no established calibration
+under response-based selection or spatially varying nuisance coefficients.
+
+Moran is reported as `not_calculated: weights_not_supplied` by default. To
+compute it, supply a scientifically chosen common matrix as `moran_weights`.
+Rows and columns must follow data order; supplied names must match exactly.
+Weights must be finite, nonnegative and have zero diagonal. Row
+standardization is controlled explicitly. Islands fail by default;
+`moran_zero_policy = "keep"` retains them in global centering/permutations and
+marks their local statistics unavailable. No neighbor graph is chosen for you.
+
+## Bounded execution and verified resume
+
+A work unit is one candidate fit and its requested diagnostics. The following
+template uses your already prepared `dat` and a new versioned output directory.
+It is not executed when building this guide.
+
+```{r checkpoint-template, eval=FALSE}
+run_dir <- "results/gwr-selection-v01"
+partial <- gwr_select(y ~ x1 + x2, dat, c("east", "north"),
+  k = c(20, 28), checkpoint = run_dir, max_evaluations = 10,
+  control = gwrs_control(n_threads = 1))
+gwr_select_verify(run_dir)
+finished <- gwr_select(y ~ x1 + x2, dat, c("east", "north"),
+  k = c(20, 28), checkpoint = run_dir, resume = TRUE,
+  control = gwrs_control(n_threads = 1))
+gwr_select_verify(run_dir)
+```
+
+Invocation limits produce explicitly provisional results. Resume verifies
+data, settings (including Moran seeds/weights and thread controls), software,
+file sizes and SHA-256 hashes before reusing immutable candidate packs.
+Uncommitted orphan packs are retained but ignored. A single owned lock prevents
+concurrent writers. Stale locks are never silently removed: confirm the owner
+is no longer running, then archive its `run.lock` directory before resuming.
+
+`progress.json` and append-only `progress.tsv` distinguish calculated and durable
+counts. Search ETA uses measured throughput for new candidates in the current
+invocation and excludes final refits/output verification; stepwise total work
+and ETA remain unknown. Progress updates occur between candidates, at most
+every 30 seconds, so a long individual fit may delay the next heartbeat.
+Final result and ranking snapshots are numbered without overwriting earlier
+snapshots. Use `gwr_select_verify()` for integrity and completeness checks;
+progress alone is not validation. `memory_limit_mb` guards estimated neighbor
+and diagnostic workspaces, not total process memory.

@@ -18,7 +18,8 @@ libraries by the reproduction launcher. See [source provenance](scad-mcp/SOURCES
 ## Downloadable files
 
 - [Independent reproduction ZIP](gwrs-scad-mcp-reproduction-v2.zip)
-- [Current package source with `acs2020_2024_counties`](gwrs_0.4.0.9013-acs-period-v1.tar.gz)
+- [Current package source with joint GWR selection and ACS data](gwrs_0.4.0.9014.tar.gz)
+- [Preserved ACS period-name update](gwrs_0.4.0.9013-acs-period-v1.tar.gz)
 - [Preserved earlier package source](gwrs_0.4.0.9013.tar.gz)
 - [SHA-256 checksums](SHA256SUMS) and [file sizes](distribution-manifest.json)
 - [Executed validation and limits](scad-mcp/VALIDATION.md)
@@ -31,4 +32,6 @@ The current package source provides `acs2020_2024_counties` and its identical
 legacy name `acs2024_counties`. Each row is one county with Census period
 estimates for 2020–2024; annual observations are not stacked or averaged.
 The reproduction ZIP and earlier package archive remain frozen snapshots;
-use the current package archive or GitHub installation for the new dataset name.
+use the current package archive or GitHub installation for the period-explicit
+dataset name and `gwr_select()`. Historical numerical engines and completed
+results remain separate from this software update.

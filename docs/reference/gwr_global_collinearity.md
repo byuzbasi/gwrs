@@ -1,0 +1,63 @@
+# Global predictor collinearity diagnostics
+
+Computes one global condition number, VIFs and the predictor correlation
+matrix, using all training observations with equal weights. No model fit
+is needed. The RcppArmadillo core stores an n-by-p centered design and
+p-by-p matrices, never an n-by-n spatial matrix.
+
+## Usage
+
+``` r
+gwr_global_collinearity(object, threshold_cn = 30, threshold_vif = 10, ...)
+```
+
+## Arguments
+
+- object:
+
+  A finite numeric predictor matrix/data frame without an intercept, or
+  a \`gwrs_fit\` retaining its design matrix.
+
+- threshold_cn, threshold_vif:
+
+  Positive flag thresholds, matching \[gwr_local_collinearity()\].
+
+- ...:
+
+  Unused.
+
+## Value
+
+A \`gwrs_global_collinearity\` object including \`condition_number\`,
+\`vif\`, \`correlation\`, \`eigenvalues\`, \`rank\` and
+\`constant_columns\`.
+
+## Details
+
+Predictors are centered and scaled by their root mean square deviations.
+The condition number is the square root of the largest/smallest
+eigenvalue ratio of the correlation matrix; the intercept is excluded.
+This equals the singular-value condition number of the standardized
+design. VIFs are the diagonal of the inverse correlation matrix.
+Eigenvalues at or below \`max(1, largest eigenvalue) \* 1e-10\` are
+numerically rank deficient. Rank-deficient designs return infinite CN
+and VIFs. Constant columns make the correlation matrix undefined: CN/VIF
+are infinite, correlation and eigenvalues are missing, and rank is
+unavailable. No observations or predictors are silently removed.
+Threshold flags are diagnostics, not tests.
+
+## References
+
+Wheeler, D. and Tiefelsdorf, M. (2005). Multicollinearity and
+correlation among local regression coefficients in geographically
+weighted regression. Journal of Geographical Systems, 7, 161-187.
+[doi:10.1007/s10109-005-0155-6](https://doi.org/10.1007/s10109-005-0155-6)
+.
+
+## Examples
+
+``` r
+global <- gwr_global_collinearity(datasets::mtcars[, c("wt", "hp", "disp")])
+global
+global$correlation
+```

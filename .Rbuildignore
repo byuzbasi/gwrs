@@ -5,3 +5,7 @@
 ^reproducibility$
 ^repository-validation$
 ^data-raw$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^vignettes/articles$

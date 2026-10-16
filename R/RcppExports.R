@@ -69,3 +69,7 @@ cpp_gwr_moran <- function(residuals, neighbor_index, neighbor_distance, kernel, 
     .Call(`_gwrs_cpp_gwr_moran`, residuals, neighbor_index, neighbor_distance, kernel, adaptive, fixed_bandwidth, row_standardize, permutations, seed, n_threads, grain_size)
 }
 
+cpp_gwr_moran_weights <- function(residuals, spatial_weights, row_standardize, keep_islands, permutations, seed, n_threads, grain_size, memory_limit_mb) {
+    .Call(`_gwrs_cpp_gwr_moran_weights`, residuals, spatial_weights, row_standardize, keep_islands, permutations, seed, n_threads, grain_size, memory_limit_mb)
+}
+

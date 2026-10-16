@@ -25,7 +25,7 @@ by itself establish a global optimum or recovery of the true active set.
 
 ```{r interface-table, echo=FALSE}
 knitr::kable(data.frame(
-  Estimator = c("GWR-Ridge", "GWR-Lasso", "GWR-Elastic Net", "GWR-SCAD", "GWR-MCP"),
+  Estimator = c("GWR-Ridge", "GWR-Lasso", "GWR-ENET", "GWR-SCAD", "GWR-MCP"),
   Formula = c("gwr_ridge()", "gwr_lasso()", "gwr_en()", "gwr_scad()", "gwr_mcp()"),
   Matrix = c("gwr_ridge_fit()", "gwr_lasso_fit()", "gwr_en_fit()", "gwr_scad_fit()", "gwr_mcp_fit()")
 ))
@@ -88,10 +88,23 @@ search; this guide does not perform such a search. Examine convergence,
 candidate eligibility and numerical diagnostics before interpreting results.
 The default SCAD/MCP solver remains `coordinate`.
 
+## Joint ordinary-GWR selection
+
+Use `gwr_select()` to compare unpenalized GWR predictor subsets, kernels and
+bandwidths on a common sample. The [joint-selection guide](gwrs-selection.html)
+provides an executable example, diagnostic limits and verified resume. This
+search selects a predictor subset for each candidate model; local penalized
+fits can instead have different active sets at different locations.
+
+F reference probabilities are exploratory and have no established calibration,
+including for unpenalized fits. F1 and F2 share one residual-sum-of-squares
+ratio; they do not provide independent confirmations. These diagnostics do
+not rank candidate models or validate a selected coefficient map.
+
 ## Paper-specific source versions
 
 This guide describes the current package. Reproducing the paper requires its
-frozen simulation (0.4.0) and county-analysis (0.4.0.9006) source versions,
+recorded simulation (0.4.0) and county-analysis (0.4.0.9006) source versions,
 settings, inputs and software records. Use the accompanying reproduction
 archive for those studies. This demonstration is intentionally small and is
 not a substitute for either numerical experiment.

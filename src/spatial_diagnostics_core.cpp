@@ -552,57 +552,14 @@ Rcpp::List cpp_gwr_local_residual_diagnostics(
   );
 }
 
-// [[Rcpp::export]]
-Rcpp::List cpp_gwr_moran(
-    const arma::vec& residuals,
-    const arma::umat& neighbor_index,
-    const arma::mat& neighbor_distance,
-    const int kernel,
-    const bool adaptive,
-    const double fixed_bandwidth,
-    const bool row_standardize,
-    const int permutations,
-    const double seed,
-    const int n_threads,
+// Shared arithmetic and deterministic permutation workers; legacy weights are unchanged.
+static Rcpp::List gwr_moran_from_weights(
+    const arma::vec& residuals, const arma::umat& neighbor_index,
+    const arma::mat& weights, const double total_weight,
+    const int permutations, const double seed, const int n_threads,
     const int grain_size) {
   const arma::uword n = residuals.n_elem;
   const arma::uword k = neighbor_index.n_rows;
-  if (n < 2 || neighbor_index.n_cols != n ||
-      neighbor_distance.n_cols != n || neighbor_distance.n_rows != k) {
-    Rcpp::stop("invalid residual or neighbor dimensions");
-  }
-  if (permutations < 0 || !std::isfinite(seed) || seed < 0.0) {
-    Rcpp::stop("permutations and seed must be nonnegative");
-  }
-  arma::mat weights(k, n, arma::fill::zeros);
-  arma::vec raw_weights(k, arma::fill::zeros);
-  double total_weight = 0.0;
-  for (arma::uword target = 0; target < n; ++target) {
-    double bandwidth_used = 0.0;
-    gwrs::compute_kernel_weights(
-      neighbor_distance, target, kernel, adaptive, fixed_bandwidth,
-      raw_weights, bandwidth_used
-    );
-    double row_sum = 0.0;
-    for (arma::uword row = 0; row < k; ++row) {
-      const arma::uword encoded = neighbor_index(row, target);
-      if (encoded == 0 || encoded > n) {
-        Rcpp::stop("invalid neighbor index");
-      }
-      const double value = encoded == target + 1 ? 0.0 : raw_weights[row];
-      weights(row, target) = value;
-      row_sum += value;
-    }
-    if (row_standardize && row_sum > gwrs::kNumericalEpsilon) {
-      weights.col(target) /= row_sum;
-      row_sum = 1.0;
-    }
-    total_weight += row_sum;
-  }
-  if (total_weight <= gwrs::kNumericalEpsilon) {
-    Rcpp::stop("spatial weights contain no non-self connections");
-  }
-
   const arma::vec z = residuals - arma::mean(residuals);
   const double denominator = arma::dot(z, z);
   if (denominator <= gwrs::kNumericalEpsilon) {
@@ -702,4 +659,123 @@ Rcpp::List cpp_gwr_moran(
     Rcpp::_ ["permuted_I"] = global_permuted,
     Rcpp::_ ["total_weight"] = total_weight
   );
+}
+
+// [[Rcpp::export]]
+Rcpp::List cpp_gwr_moran(
+    const arma::vec& residuals,
+    const arma::umat& neighbor_index,
+    const arma::mat& neighbor_distance,
+    const int kernel,
+    const bool adaptive,
+    const double fixed_bandwidth,
+    const bool row_standardize,
+    const int permutations,
+    const double seed,
+    const int n_threads,
+    const int grain_size) {
+  const arma::uword n = residuals.n_elem;
+  const arma::uword k = neighbor_index.n_rows;
+  if (n < 2 || neighbor_index.n_cols != n ||
+      neighbor_distance.n_cols != n || neighbor_distance.n_rows != k) {
+    Rcpp::stop("invalid residual or neighbor dimensions");
+  }
+  if (permutations < 0 || !std::isfinite(seed) || seed < 0.0) {
+    Rcpp::stop("permutations and seed must be nonnegative");
+  }
+  arma::mat weights(k, n, arma::fill::zeros);
+  arma::vec raw_weights(k, arma::fill::zeros);
+  double total_weight = 0.0;
+  for (arma::uword target = 0; target < n; ++target) {
+    double bandwidth_used = 0.0;
+    gwrs::compute_kernel_weights(
+      neighbor_distance, target, kernel, adaptive, fixed_bandwidth,
+      raw_weights, bandwidth_used
+    );
+    double row_sum = 0.0;
+    for (arma::uword row = 0; row < k; ++row) {
+      const arma::uword encoded = neighbor_index(row, target);
+      if (encoded == 0 || encoded > n) {
+        Rcpp::stop("invalid neighbor index");
+      }
+      const double value = encoded == target + 1 ? 0.0 : raw_weights[row];
+      weights(row, target) = value;
+      row_sum += value;
+    }
+    if (row_standardize && row_sum > gwrs::kNumericalEpsilon) {
+      weights.col(target) /= row_sum;
+      row_sum = 1.0;
+    }
+    total_weight += row_sum;
+  }
+  if (total_weight <= gwrs::kNumericalEpsilon) {
+    Rcpp::stop("spatial weights contain no non-self connections");
+  }
+
+  return gwr_moran_from_weights(residuals, neighbor_index, weights,
+    total_weight, permutations, seed, n_threads, grain_size);
+}
+
+// [[Rcpp::export]]
+Rcpp::List cpp_gwr_moran_weights(
+    const arma::vec& residuals, const arma::sp_mat& spatial_weights,
+    const bool row_standardize, const bool keep_islands,
+    const int permutations, const double seed, const int n_threads,
+    const int grain_size, const double memory_limit_mb) {
+  const arma::uword n = residuals.n_elem;
+  if (n < 2 || spatial_weights.n_rows != n || spatial_weights.n_cols != n ||
+      !residuals.is_finite() || permutations < 0 || !std::isfinite(seed) ||
+      seed < 0 || !std::isfinite(memory_limit_mb) || memory_limit_mb <= 0) {
+    Rcpp::stop("invalid residual, weight, permutation or memory specification");
+  }
+  arma::uvec counts(n, arma::fill::zeros);
+  for (auto it = spatial_weights.begin(); it != spatial_weights.end(); ++it) {
+    if (!std::isfinite(*it) || *it < 0 || (it.row() == it.col() && *it != 0))
+      Rcpp::stop("weights must be finite, nonnegative and have a zero diagonal");
+    if (*it > 0) ++counts[it.row()];
+  }
+  if (!keep_islands && arma::any(counts == 0))
+    Rcpp::stop("spatial weights contain islands; explicitly use zero_policy = 'keep'");
+  const arma::uword k = std::max<arma::uword>(1, counts.max());
+  const double blocks = std::min<double>(permutations, kDeterministicMoranMomentBlocks);
+  const double workspace = (16.0 * n * k + 16.0 * n * blocks +
+    128.0 * n + 8.0 * permutations) / (1024.0 * 1024.0);
+  if (workspace > memory_limit_mb)
+    Rcpp::stop("explicit-weight Moran workspace exceeds memory_limit_mb");
+  arma::umat index(k, n);
+  for (arma::uword i = 0; i < n; ++i) index.col(i).fill(i + 1);
+  arma::mat weights(k, n, arma::fill::zeros);
+  counts.zeros();
+  for (auto it = spatial_weights.begin(); it != spatial_weights.end(); ++it) {
+    if (*it > 0) {
+      const arma::uword target = it.row();
+      const arma::uword slot = counts[target]++;
+      index(slot, target) = it.col() + 1;
+      weights(slot, target) = *it;
+    }
+  }
+  double total_weight = 0;
+  for (arma::uword i = 0; i < n; ++i) {
+    double mass = arma::accu(weights.col(i));
+    if (!std::isfinite(mass)) Rcpp::stop("spatial weight row sum overflow");
+    if (row_standardize && mass > 0) {
+      weights.col(i) /= mass;
+      mass = 1;
+    }
+    total_weight += mass;
+  }
+  if (!std::isfinite(total_weight) || total_weight <= 0)
+    Rcpp::stop("spatial weights contain no usable connections");
+  Rcpp::List result = gwr_moran_from_weights(residuals, index, weights,
+    total_weight, permutations, seed, n_threads, grain_size);
+  // Isolated sites have no local spatial association statistic or inference.
+  arma::vec local_I = result["local_I"], local_z = result["local_z"], local_p = result["local_p"];
+  const arma::uvec islands = arma::find(counts == 0);
+  local_I.elem(islands).fill(arma::datum::nan);
+  local_z.elem(islands).fill(arma::datum::nan);
+  local_p.elem(islands).fill(arma::datum::nan);
+  result["local_I"] = local_I; result["local_z"] = local_z; result["local_p"] = local_p;
+  result["islands"] = arma::uvec(islands + 1);
+  result["workspace_estimate_mb"] = workspace;
+  return result;
 }
