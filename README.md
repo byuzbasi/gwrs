@@ -1,5 +1,7 @@
 # gwrs <img src="man/figures/logo.svg" align="right" width="115" alt="gwrs spatial regression logo" />
 
+[Documentation](https://byuzbasi.github.io/gwrs/) · [Get started](https://byuzbasi.github.io/gwrs/articles/gwrs-introduction.html) · [Reference](https://byuzbasi.github.io/gwrs/reference/index.html)
+
 **Fast Geographically Weighted Regression and Selection**
 
 <img class="gwrs-hero" src="man/figures/gwrs-banner.svg" width="1600" alt="gwrs: Fast Geographically Weighted Regression and Selection. Joint GWR model selection and Ridge, Lasso, ENET, SCAD and MCP." />
